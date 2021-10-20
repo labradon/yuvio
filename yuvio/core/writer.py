@@ -12,7 +12,7 @@ class Writer:
         if isinstance(file, IOBase):
             self._file = file
         else:
-            self._file = open(Path(file), 'wb')
+            self._file = open(Path(file).resolve(), 'wb')
         self._format = format
 
     def write(self, yuv_frames: Union[List[YUVFrame], YUVFrame]):

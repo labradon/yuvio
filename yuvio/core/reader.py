@@ -12,7 +12,7 @@ class Reader:
         if isinstance(file, IOBase):
             self._file = file
         else:
-            self._file = open(Path(file), 'rb')
+            self._file = open(Path(file).resolve(), 'rb')
         self._format = format
         self._length = self._length_from_filesize()
         self._iter_idx = 0

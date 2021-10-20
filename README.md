@@ -15,7 +15,6 @@ pip install yuvio
 ```
 
 ## Usage
- g
 To read and write yuv files, `yuvio` provides the functions `imread`, `imwrite`, `mimread` and
 `mimwrite` for single and multiple frames, respectively. Both require the specification of a
 pixel format to use for the yuv data.
