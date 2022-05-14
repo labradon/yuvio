@@ -112,8 +112,7 @@ def frame(yuv, pixel_format):
         expected_chroma_shape = (y.shape[0] / sub_h, y.shape[1] / sub_w)
     if u.shape != expected_chroma_shape or v.shape != expected_chroma_shape:
         raise RuntimeError("Invalid chroma shape for pixel format '{}'".format(pixel_format))
-    yuv_frame = YUVFrame(np.empty(1, dtype=yuv_format.dtype)[0], pixel_format)
-    yuv_frame.set(yuv)
+    yuv_frame = YUVFrame(y, u, v, pixel_format)
     return yuv_frame
 
 
@@ -127,8 +126,11 @@ def empty(width, height, pixel_format):
     :return: yuv frame
     """
     yuv_format = pixel_formats[pixel_format](width, height)
-    yuv_frame = YUVFrame(np.empty(1, dtype=yuv_format.dtype)[0], pixel_format)
-    return yuv_frame
+    y, u, v = yuv_format.unpack(np.empty(1, dtype=yuv_format.dtype))
+    return YUVFrame(y[0],
+                    u[0] if u is not None else None,
+                    v[0] if v is not None else None,
+                    pixel_format)
 
 
 def zeros(width, height, pixel_format):
@@ -141,8 +143,11 @@ def zeros(width, height, pixel_format):
     :return: yuv frame
     """
     yuv_format = pixel_formats[pixel_format](width, height)
-    yuv_frame = YUVFrame(np.zeros(1, dtype=yuv_format.dtype)[0], pixel_format)
-    return yuv_frame
+    y, u, v = yuv_format.unpack(np.zeros(1, dtype=yuv_format.dtype))
+    return YUVFrame(y[0],
+                    u[0] if u is not None else None,
+                    v[0] if v is not None else None,
+                    pixel_format)
 
 
 def ones(width, height, pixel_format):
@@ -155,5 +160,8 @@ def ones(width, height, pixel_format):
     :return: yuv frame
     """
     yuv_format = pixel_formats[pixel_format](width, height)
-    yuv_frame = YUVFrame(np.ones(1, dtype=yuv_format.dtype)[0], pixel_format)
-    return yuv_frame
+    y, u, v = yuv_format.unpack(np.ones(1, dtype=yuv_format.dtype))
+    return YUVFrame(y[0],
+                    u[0] if u is not None else None,
+                    v[0] if v is not None else None,
+                    pixel_format)

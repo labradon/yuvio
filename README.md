@@ -29,6 +29,22 @@ yuv_frames = yuvio.mimread("example_yuv420p.yuv", 1920, 1080, "yuv420p")
 yuvio.mimwrite("example_yuv420p_copy.yuv", yuv_frames)
 ```
 
+Thereby, `yuvio` is not restricted to file objects and can read and write from/to other `io` 
+streams as well. For example, this allows to conveniently unpack the individual yuv planes from 
+interleaved yuv data available in memory.
+
+```python
+import io
+import yuvio
+
+data = ...  # e.g. np.ndarray
+buffer = io.BytesIO(data)
+yuv_frame = yuvio.imread(buffer, 1920, 1080, "yuyv422")
+y = yuv_frame.y
+u = yuv_frame.u
+v = yuv_frame.v
+```
+
 For advanced use cases, `yuvio` also provides direct access to the `Reader` and `Writer` objects.
 This allows sequential reading and writing from/to yuv files and may be beneficial for iterating
 over large files without keeping all frames in memory.
@@ -63,7 +79,7 @@ import numpy as np
 
 y = 255 * np.ones((1920, 1080), dtype=np.uint8)
 u = np.zeros((960, 540), dtype=np.uint8)
-v = np.zeros((560, 540), dtype=np.uint8)
+v = np.zeros((960, 540), dtype=np.uint8)
 frame_420 = yuvio.frame((y, u, v), "yuv420p")
 
 frame_400 = yuvio.frame((y, None, None), "gray")

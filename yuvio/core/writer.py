@@ -21,12 +21,24 @@ class Writer:
         frame_count = len(yuv_frames)
         if frame_count == 0:
             return
-        y = np.empty((frame_count, yuv_frames[0].y.shape[0], yuv_frames[0].y.shape[1]), dtype=yuv_frames[0].y.dtype)
-        u = np.empty((frame_count, yuv_frames[0].u.shape[0], yuv_frames[0].u.shape[1]), dtype=yuv_frames[0].u.dtype)
-        v = np.empty((frame_count, yuv_frames[0].v.shape[0], yuv_frames[0].v.shape[1]), dtype=yuv_frames[0].v.dtype)
-        for i, yuv_frame in enumerate(yuv_frames):
-            y[i] = yuv_frame.y
-            u[i] = yuv_frame.u
-            v[i] = yuv_frame.v
-        data = self._format.pack((y, u, v))
-        data.tofile(self._file)
+
+        if self._format.chroma_subsampling() != (0, 0):
+            y = np.empty((frame_count, yuv_frames[0].y.shape[0], yuv_frames[0].y.shape[1]),
+                         dtype=yuv_frames[0].y.dtype)
+            u = np.empty((frame_count, yuv_frames[0].u.shape[0], yuv_frames[0].u.shape[1]),
+                         dtype=yuv_frames[0].u.dtype)
+            v = np.empty((frame_count, yuv_frames[0].v.shape[0], yuv_frames[0].v.shape[1]),
+                         dtype=yuv_frames[0].v.dtype)
+            for i, yuv_frame in enumerate(yuv_frames):
+                y[i] = yuv_frame[0]
+                u[i] = yuv_frame[1]
+                v[i] = yuv_frame[2]
+            data = self._format.pack((y, u, v))
+        else:
+            y = np.empty((frame_count, yuv_frames[0].y.shape[0], yuv_frames[0].y.shape[1]),
+                         dtype=yuv_frames[0].y.dtype)
+            for i, yuv_frame in enumerate(yuv_frames):
+                y[i] = yuv_frame[0]
+            data = self._format.pack((y, None, None))
+
+        self._file.write(data.data)

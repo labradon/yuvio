@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+from typing import Dict, Tuple, Optional
 import numpy as np
 
 
@@ -40,12 +40,12 @@ class Format(ABC):
         pass
 
     @abstractmethod
-    def unpack(self, data: np.ndarray) -> tuple:
+    def unpack(self, data: np.ndarray) -> Tuple[np.ndarray, Optional[np.ndarray], Optional[np.ndarray]]:
         """Unpack the data described by dtype into raw components."""
         pass
 
     @abstractmethod
-    def pack(self, raw: tuple) -> np.ndarray:
+    def pack(self, raw: Tuple[np.ndarray, Optional[np.ndarray], Optional[np.ndarray]]) -> np.ndarray:
         """Pack the raw components into data described by dtype."""
         pass
 

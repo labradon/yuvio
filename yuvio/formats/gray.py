@@ -12,9 +12,7 @@ class _GrayBase(Format, ABC):
 
     def unpack(self, data):
         y = data['y']
-        u = np.empty((y.shape[0], 0, 0), dtype=self.dtype['u'].base)
-        v = np.empty((y.shape[0], 0, 0), dtype=self.dtype['v'].base)
-        return y, u, v
+        return y, None, None
 
     def pack(self, yuv):
         data = np.empty(yuv[0].shape[0], dtype=self.dtype)
