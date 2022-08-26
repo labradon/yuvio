@@ -29,8 +29,8 @@ class Gray(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u1', (self._height, self._width)),
-            ('u', '<u1', (0, 0)),
-            ('v', '<u1', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -43,8 +43,8 @@ class Gray10LE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -57,8 +57,8 @@ class Gray10BE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '>u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -71,8 +71,8 @@ class Gray16LE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -85,8 +85,8 @@ class Gray16BE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '>u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -99,8 +99,8 @@ class Gray9LE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -113,8 +113,8 @@ class Gray9BE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '>u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -127,8 +127,8 @@ class Gray12LE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -141,8 +141,8 @@ class Gray12BE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '>u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -155,8 +155,8 @@ class Gray14LE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '<u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
@@ -169,8 +169,8 @@ class Gray14BE(_GrayBase):
     def dtype(self):
         return np.dtype([
             ('y', '>u2', (self._height, self._width)),
-            ('u', '|V0', (0, 0)),
-            ('v', '|V0', (0, 0))
+            ('u', '|V0'),
+            ('v', '|V0')
         ])
 
 
