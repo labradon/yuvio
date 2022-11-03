@@ -1,3 +1,9 @@
+[![License](https://img.shields.io/github/license/labradon/yuvio)](https://opensource.org/licenses/MIT)
+![GitHub top language](https://img.shields.io/github/languages/top/labradon/yuvio)
+[![GitHub stars](https://img.shields.io/github/stars/labradon/yuvio)](https://github.com/labradon/yuvio/stargazers)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/yuvio)
+![PyPI](https://img.shields.io/pypi/v/yuvio)
+
 <div align="center">
     <img align="center" src="logo.png" width="520" alt=“YUVIO” />
 </div>
@@ -39,7 +45,7 @@ import yuvio
 
 data = ...  # e.g. np.ndarray
 buffer = io.BytesIO(data)
-yuv_frame = yuvio.imread(buffer, 1920, 1080, "yuyv422")
+yuv_frame = yuvio.imread(buffer, 1920, 1080, "v210")
 y = yuv_frame.y
 u = yuv_frame.u
 v = yuv_frame.v
@@ -103,6 +109,7 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'gray12be'`
 * `'gray14le'`
 * `'gray14be'`
+* `'v210'`
 * `'yuv420p'`
 * `'yuv420p10le'`
 * `'yuv420p10be'`

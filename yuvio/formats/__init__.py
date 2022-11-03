@@ -4,6 +4,7 @@ from .gray import (Gray,
                    Gray9LE, Gray9BE,
                    Gray12LE, Gray12BE,
                    Gray14LE, Gray14BE)
+from .v210 import V210
 from .yuv420p import (YUV420P,
                       YUV420P10LE, YUV420P10BE,
                       YUV420P16LE, YUV420P16BE,
