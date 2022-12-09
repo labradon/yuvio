@@ -21,26 +21,16 @@ class NV12(Format):
         ])
 
     def unpack(self, data):
-        #I was getting some strange behaviours when I tried naming the variables y, u & v.
-        #Renaming them to yy, uu, vv solved it which hints at a variable uniqueness issue.
-        yy = data['y']
-        uu = np.split(data['uv'].reshape((data['uv'].size // 2, 2)), 2, axis=1)[0].reshape((self._height // 2, self._width // 2))
-        vv = np.split(data['uv'].reshape((data['uv'].size // 2, 2)), 2, axis=1)[1].reshape((self._height // 2, self._width // 2))
-
-        return yy, uu, vv
+        y = data['y']
+        u = data['uv'][:, :, ::2]
+        v = data['uv'][:, :, 1::2]
+        return y, u, v
 
     def pack(self, yuv):
-        #I was getting some strange behaviours when I tried naming the variables y, u & v.
-        #Renaming them to yy, uu, vv solved it which hints at a variable uniqueness issue.
-        yy = yuv[0]
-        uu = yuv[1]
-        vv = yuv[2]
-
-        data = np.empty(yy.shape[0], dtype=self.dtype)
-
-        data['y'][:]  = yy
-        data['uv'][:] = np.concatenate((uu.reshape((uu.size,1)),vv.reshape((vv.size,1))),axis=1).reshape((self._height // 2, self._width))
-
+        data = np.empty(yuv[0].shape[0], dtype=self.dtype)
+        data['y'][:] = yuv[0]
+        data['uv'][:, :, ::2] = yuv[1]
+        data['uv'][:, :, 1::2] = yuv[2]
         return data
 
 
