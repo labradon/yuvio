@@ -109,6 +109,7 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'gray12be'`
 * `'gray14le'`
 * `'gray14be'`
+* `'nv12'`
 * `'v210'`
 * `'yuv420p'`
 * `'yuv420p10le'`
