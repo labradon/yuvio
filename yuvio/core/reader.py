@@ -64,8 +64,8 @@ class Reader:
         yuv_frames = []
         if self._format.chroma_subsampling() != (0, 0):
             for y_frame, u_frame, v_frame in zip(y_frames, u_frames, v_frames):
-                yuv_frames.append(YUVFrame(y_frame, u_frame, v_frame, self._format.identifier()))
+                yuv_frames.append(YUVFrame(y_frame, u_frame, v_frame, self._format))
         else:
             for y_frame in y_frames:
-                yuv_frames.append(YUVFrame(y_frame, None, None, self._format.identifier()))
+                yuv_frames.append(YUVFrame(y_frame, None, None, self._format))
         return yuv_frames

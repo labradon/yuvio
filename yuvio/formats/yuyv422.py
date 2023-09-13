@@ -34,6 +34,10 @@ class YUYV422(_Interleaved422Base):
     def identifier():
         return "yuyv422"
 
+    @staticmethod
+    def bitdepth():
+        return 8
+
     @property
     def dtype(self):
         return np.dtype([
@@ -51,6 +55,10 @@ class UYVY422(_Interleaved422Base):
     def identifier():
         return "uyvy422"
 
+    @staticmethod
+    def bitdepth():
+        return 8
+
     @property
     def dtype(self):
         return np.dtype([
@@ -67,6 +75,10 @@ class YVYU422(_Interleaved422Base):
     @staticmethod
     def identifier():
         return "yvyu422"
+
+    @staticmethod
+    def bitdepth():
+        return 8
 
     @property
     def dtype(self):

@@ -1,4 +1,5 @@
 from .core import FormatManager
+from .core import colorspaces
 
 pixel_formats = FormatManager()
 

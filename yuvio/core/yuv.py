@@ -1,5 +1,7 @@
 from typing import Union, Tuple, Optional
 import numpy as np
+from . import Format
+from . import colorspaces
 
 
 class YUVFrame:
@@ -8,15 +10,19 @@ class YUVFrame:
     def __init__(self, y: np.ndarray,
                  u: Optional[np.ndarray],
                  v: Optional[np.ndarray],
-                 pixel_format: str):
+                 yuv_format: Format):
         self._y = y
         self._u = u
         self._v = v
-        self._pixel_format = pixel_format
+        self._yuv_format = yuv_format
 
     @property
     def pixel_format(self):
-        return self._pixel_format
+        return self._yuv_format.identifier()
+
+    @property
+    def yuv_format(self):
+        return self._yuv_format
 
     @property
     def resolution(self):
@@ -91,3 +97,6 @@ class YUVFrame:
 
     def split(self):
         return self._y, self._u, self._v
+
+    def to_rgb(self, color_conversion: str, value_range: str = 'limited'):
+        return colorspaces[(color_conversion, value_range)].to_rgb(*self.split(), self.yuv_format)

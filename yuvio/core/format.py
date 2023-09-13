@@ -29,6 +29,12 @@ class Format(ABC):
 
     @staticmethod
     @abstractmethod
+    def bitdepth():
+        """Return bitdepth of this format."""
+        pass
+
+    @staticmethod
+    @abstractmethod
     def identifier():
         """Return the unique identifier for this format."""
         pass
