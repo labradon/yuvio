@@ -2,6 +2,7 @@ import numpy as np
 from .. import pixel_formats
 from . import Reader, Writer
 from . import YUVFrame
+from . import colorspaces
 
 
 def imread(file, width, height, pixel_format, index=0):
@@ -165,3 +166,16 @@ def ones(width, height, pixel_format):
                     u[0] if u is not None else None,
                     v[0] if v is not None else None,
                     yuv_format)
+
+
+def from_rgb(rgb, pixel_format, color_conversion='bt709', value_range='limited'):
+    """
+    Initialize a new yuv frame from rgb data.
+
+    :param rgb: rgb data
+    :param pixel_format: ffmpeg pixel format specifier
+    :param color_conversion: color conversion specifier (default: 'bt709')
+    :param value_range: yuv value range (default: 'limited')
+    :return: yuv frame
+    """
+    return colorspaces[color_conversion, value_range].from_rgb(rgb, pixel_format)

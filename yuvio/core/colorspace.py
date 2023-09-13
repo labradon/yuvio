@@ -45,7 +45,9 @@ class Colorspace:
         return np.stack((r, g, b), axis=-1)
 
     def from_rgb(self, rgb_frame: np.ndarray, pixel_format: Format) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        # rgb = rgb_frame.astype(np.int64) << 16
         pass
+
 
 
 class ColorspaceManager:
@@ -68,7 +70,6 @@ class ColorspaceManager:
             lambda key: f"({key[0]}, {key[1]})",
             self._conversions.keys()
         )))
-
 
 
 colorspaces = ColorspaceManager()
