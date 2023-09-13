@@ -44,10 +44,29 @@ class Colorspace:
 
         return np.stack((r, g, b), axis=-1)
 
-    def from_rgb(self, rgb_frame: np.ndarray, pixel_format: Format) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-        # rgb = rgb_frame.astype(np.int64) << 16
-        pass
+    def from_rgb(self, rgb_frame: np.ndarray, yuv_format: Format) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        bitdepth = yuv_format.bitdepth()
+        rgb = rgb_frame.astype(np.int64)
 
+        a = int(np.round(0.2126 * (224/255) * (2**16)))
+        b = int(np.round(0.7152 * (224/255) * (2**16)))
+        c = int(np.round(0.0722 * (224/255) * (2**16)))
+        d = int(np.round(1/1.8556 * (2**16)))
+        e = int(np.round(1/1.5748 * (2**16)))
+        scale = int(np.round((224/255) * (2**16)))
+
+        y = a * rgb[..., 0] + b * rgb[..., 1] + c * rgb[..., 2]
+        u = (rgb[..., 2] * scale - y) * d
+        v = (rgb[..., 0] * scale - y) * e
+
+        y_offset = self._y_baseoffset << (bitdepth - 8)
+        c_zero = 128 << (bitdepth - 8)
+
+        y = (y.astype(np.int64) >> 16) + y_offset
+        u = (u.astype(np.int64) >> 32) + c_zero
+        v = (v.astype(np.int64) >> 32) + c_zero
+
+        return y, u, v
 
 
 class ColorspaceManager:

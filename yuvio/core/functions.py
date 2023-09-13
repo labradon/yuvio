@@ -178,4 +178,6 @@ def from_rgb(rgb, pixel_format, color_conversion='bt709', value_range='limited')
     :param value_range: yuv value range (default: 'limited')
     :return: yuv frame
     """
-    return colorspaces[color_conversion, value_range].from_rgb(rgb, pixel_format)
+    yuv_format = pixel_formats[pixel_format](rgb.shape[1], rgb.shape[0])
+    y, u, v = colorspaces[color_conversion, value_range].from_rgb(rgb, yuv_format)
+    return YUVFrame(y, u, v, yuv_format)
