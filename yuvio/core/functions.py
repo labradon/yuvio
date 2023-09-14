@@ -168,16 +168,16 @@ def ones(width, height, pixel_format):
                     yuv_format)
 
 
-def from_rgb(rgb, pixel_format, color_conversion='bt709', value_range='limited'):
+def from_rgb(rgb, pixel_format, specification='bt709', value_range='limited'):
     """
     Initialize a new yuv frame from rgb data.
 
     :param rgb: rgb data
     :param pixel_format: ffmpeg pixel format specifier
-    :param color_conversion: color conversion specifier (default: 'bt709')
+    :param specification: specification identifier (default: 'bt709')
     :param value_range: yuv value range (default: 'limited')
     :return: yuv frame
     """
     yuv_format = pixel_formats[pixel_format](rgb.shape[1], rgb.shape[0])
-    y, u, v = colorspaces[color_conversion, value_range].from_rgb(rgb, yuv_format)
+    y, u, v = colorspaces[specification, value_range].from_rgb(rgb, yuv_format)
     return YUVFrame(y, u, v, yuv_format)

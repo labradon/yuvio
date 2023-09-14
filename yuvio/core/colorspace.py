@@ -4,11 +4,45 @@ from . import Format
 
 
 class Colorspace:
-    def __init__(self, rgb_conversion_coefficients: List[int], y_baseoffset: int):
-        self._rgb_coefficients = rgb_conversion_coefficients
-        self._y_baseoffset = y_baseoffset
+    def __init__(self, coefficients: List[float],
+                 y_baserange: Tuple[int, int],
+                 cbcr_baserange: Tuple[int, int],
+                 video_basemargin: int):
+        self._coefficients = coefficients
+        self._y_baserange = y_baserange
+        self._cbcr_baserange = cbcr_baserange
+        self._video_basemargin = video_basemargin
+        self._precompute_16bit_conversion_coefficients()
+
+    def _precompute_16bit_conversion_coefficients(self):
+        a, b, c, d, e = self._coefficients
+        y_baselength = self._y_baserange[1] - self._y_baserange[0]
+        cbcr_baselength = self._cbcr_baserange[1] - self._cbcr_baserange[0]
+
+        y_scale_torgb_16bit = int(np.round((255 / y_baselength) * (2 ** 16)))
+        d_torgb_16bit = int(np.round(d * (255 / cbcr_baselength) * (2 ** 16)))
+        e_torgb_16bit = int(np.round(e * (255 / cbcr_baselength) * (2 ** 16)))
+        ae_b_torgb_16bit = int(np.round((a * e / b) * (255 / cbcr_baselength) * (2 ** 16)))
+        cd_b_torgb_16bit = int(np.round((c * d / b) * (255 / cbcr_baselength) * (2 ** 16)))
+        self._to_rgb_coefficients = [y_scale_torgb_16bit,
+                                     d_torgb_16bit, e_torgb_16bit,
+                                     ae_b_torgb_16bit, cd_b_torgb_16bit]
+
+        a_fromrgb_16bit = int(np.round(a * (2 ** 16)))
+        b_fromrgb_16bit = int(np.round(b * (2 ** 16)))
+        c_fromrgb_16bit = int(np.round(c * (2 ** 16)))
+        inv_d_fromrgb_16bit = int(np.round((1 / d) * (2 ** 16)))
+        inv_e_fromrgb_16bit = int(np.round((1 / e) * (2 ** 16)))
+        y_scale_fromrgb_16bit = int(np.round((y_baselength / 255) * (2 ** 16)))
+        cbcr_scale_fromrgb_16bit = int(np.round((cbcr_baselength / 255) * (2 ** 16)))
+        self._from_rgb_coefficients = [a_fromrgb_16bit, b_fromrgb_16bit, c_fromrgb_16bit,
+                                       inv_d_fromrgb_16bit, inv_e_fromrgb_16bit,
+                                       y_scale_fromrgb_16bit, cbcr_scale_fromrgb_16bit]
 
     def to_rgb(self, y, u, v, yuv_format: Format) -> np.ndarray:
+        if yuv_format.chroma_subsampling()[0] != 1 or yuv_format.chroma_subsampling()[1] != 1:
+            raise ValueError("Color conversion is only possible for 444 yuv (ycbcr) formats (no chroma subsampling). "
+                             f"'{yuv_format.identifier()}' entails chroma subsampling.")
         bitdepth = yuv_format.bitdepth()
         max_value = 2 ** bitdepth - 1
         dtype = y.dtype
@@ -17,67 +51,78 @@ class Colorspace:
         u = u.astype(np.int64)
         v = v.astype(np.int64)
 
-        # Upsample if necessary (rough nearest neighbor for now -> needs improvement)
-        factor_width, factor_height = yuv_format.chroma_subsampling()
-        if factor_height > 1:
-            u = np.repeat(u, factor_height, axis=0)
-            v = np.repeat(v, factor_height, axis=0)
-        if factor_width > 1:
-            u = np.repeat(u, factor_width, axis=1)
-            v = np.repeat(v, factor_width, axis=1)
-
         # Color conversion
-        y_offset = self._y_baseoffset << (bitdepth - 8)
-        c_zero = 128 << (bitdepth - 8)
+        y_offset = self._y_baserange[0] << (bitdepth - 8)
+        chroma_center = 128 << (bitdepth - 8)
 
-        y_tmp = (y - y_offset) * self._rgb_coefficients[0]
-        u_tmp = u - c_zero
-        v_tmp = v - c_zero
+        y = (y - y_offset)
+        u = (u - chroma_center)
+        v = (v - chroma_center)
 
-        r_tmp = (y_tmp + v_tmp * self._rgb_coefficients[1]) >> 16
-        g_tmp = (y_tmp + u_tmp * self._rgb_coefficients[2] + v_tmp * self._rgb_coefficients[3]) >> 16
-        b_tmp = (y_tmp + u_tmp * self._rgb_coefficients[4]) >> 16
+        (y_scale_torgb_16bit,
+         d_torgb_16bit, e_torgb_16bit,
+         ae_b_torgb_16bit, cd_b_torgb_16bit) = self._to_rgb_coefficients
+        y_16bit = y * y_scale_torgb_16bit
+        r = (y_16bit + e_torgb_16bit * v) >> 16
+        g = (y_16bit - ae_b_torgb_16bit * v - cd_b_torgb_16bit * u) >> 16
+        b = (y_16bit + d_torgb_16bit * u) >> 16
 
-        r = np.clip(r_tmp, 0, max_value).astype(dtype)
-        g = np.clip(g_tmp, 0, max_value).astype(dtype)
-        b = np.clip(b_tmp, 0, max_value).astype(dtype)
+        r = np.clip(r, 0, max_value).astype(dtype)
+        g = np.clip(g, 0, max_value).astype(dtype)
+        b = np.clip(b, 0, max_value).astype(dtype)
 
         return np.stack((r, g, b), axis=-1)
 
     def from_rgb(self, rgb_frame: np.ndarray, yuv_format: Format) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+        if yuv_format.chroma_subsampling()[0] != 1 or yuv_format.chroma_subsampling()[1] != 1:
+            raise ValueError("Color conversion is only possible for 444 yuv (ycbcr) formats (no chroma subsampling). "
+                             f"'{yuv_format.identifier()}' entails chroma subsampling.")
         bitdepth = yuv_format.bitdepth()
         rgb = rgb_frame.astype(np.int64)
 
-        a = int(np.round(0.2126 * (224/255) * (2**16)))
-        b = int(np.round(0.7152 * (224/255) * (2**16)))
-        c = int(np.round(0.0722 * (224/255) * (2**16)))
-        d = int(np.round(1/1.8556 * (2**16)))
-        e = int(np.round(1/1.5748 * (2**16)))
-        scale = int(np.round((224/255) * (2**16)))
+        (a_fromrgb_16bit, b_fromrgb_16bit, c_fromrgb_16bit,
+         inv_d_fromrgb_16bit, inv_e_fromrgb_16bit,
+         y_scale_fromrgb_16bit, cbcr_scale_fromrgb_16bit) = self._from_rgb_coefficients
 
-        y = a * rgb[..., 0] + b * rgb[..., 1] + c * rgb[..., 2]
-        u = (rgb[..., 2] * scale - y) * d
-        v = (rgb[..., 0] * scale - y) * e
+        y = a_fromrgb_16bit * rgb[..., 0] + b_fromrgb_16bit * rgb[..., 1] + c_fromrgb_16bit * rgb[..., 2]
+        u = (((rgb[..., 2] << 16) - y) * inv_d_fromrgb_16bit) >> 16
+        v = (((rgb[..., 0] << 16) - y) * inv_e_fromrgb_16bit) >> 16
 
-        y_offset = self._y_baseoffset << (bitdepth - 8)
-        c_zero = 128 << (bitdepth - 8)
+        bitdepth_shift = bitdepth - 8
+        y_low = self._y_baserange[0] << bitdepth_shift
+        chroma_center = 128 << bitdepth_shift
 
-        y = (y.astype(np.int64) >> 16) + y_offset
-        u = (u.astype(np.int64) >> 32) + c_zero
-        v = (v.astype(np.int64) >> 32) + c_zero
+        y = ((y * y_scale_fromrgb_16bit) >> 32) + y_low
+        u = ((u * cbcr_scale_fromrgb_16bit) >> 32) + chroma_center
+        v = ((v * cbcr_scale_fromrgb_16bit) >> 32) + chroma_center
+
+        clip_low = self._video_basemargin << bitdepth_shift
+        clip_high = (1 << bitdepth) - 1 - clip_low
+        y = np.clip(y, clip_low, clip_high)
+        u = np.clip(u, clip_low, clip_high)
+        v = np.clip(v, clip_low, clip_high)
 
         return y, u, v
 
 
 class ColorspaceManager:
     def __init__(self):
+        # For colorspace parameters, see:
+        # - BT.601: https://www.itu.int/rec/R-REC-BT.601
+        # - BT.709: https://www.itu.int/rec/R-REC-BT.709
+        # - BT.2020: https://www.itu.int/rec/R-REC-BT.2020
+        # - BT.2100: https://www.itu.int/rec/R-REC-BT.2100
+        # - summarized coefficients: https://gist.github.com/yohhoy/dafa5a47dade85d8b40625261af3776a
+        # - value ranges: https://ffmpeg.org/doxygen/trunk/pixfmt_8h.html#a3da0bf691418bc22c4bcbe6583ad589a
         self._conversions = {
-            ('bt601', 'limited'): Colorspace([76309, 104597, -25675, -53279, 132201], 16),
-            ('bt601', 'full'): Colorspace([65536, 91881, -22553, -46802, 116129], 0),
-            ('bt709', 'limited'): Colorspace([76309, 117489, -13975, -34925, 138438], 16),
-            ('bt709', 'full'): Colorspace([65536, 103206, -12276, -30679, 121608], 0),
-            ('bt2020', 'limited'): Colorspace([76309, 110013, -12276, -42626, 140363], 16),
-            ('bt2020', 'full'): Colorspace([65536, 96638, -10783, -37444, 123299], 0),
+            ('bt601', 'limited'): Colorspace([0.299, 0.587, 0.114, 1.772, 1.402], (16, 235), (16, 240), 1),
+            ('bt601', 'full'): Colorspace([0.299, 0.587, 0.114, 1.772, 1.402], (0, 255), (1, 255), 1),
+            ('bt709', 'limited'): Colorspace([0.2126, 0.7152, 0.0722, 1.8556, 1.5748], (16, 235), (16, 240), 1),
+            ('bt709', 'full'): Colorspace([0.2126, 0.7152, 0.0722, 1.8556, 1.5748], (0, 255), (1, 255), 1),
+            ('bt2020', 'limited'): Colorspace([0.2627, 0.6780, 0.0593, 1.8814, 1.4746], (16, 235), (16, 240), 1),
+            ('bt2020', 'full'): Colorspace([0.2627, 0.6780, 0.0593, 1.8814, 1.4746], (0, 255), (1, 255), 1),
+            ('bt2100', 'limited'): Colorspace([0.2627, 0.6780, 0.0593, 1.8814, 1.4746], (16, 235), (16, 240), 1),
+            ('bt2100', 'full'): Colorspace([0.2627, 0.6780, 0.0593, 1.8814, 1.4746], (0, 255), (1, 255), 1)
         }
 
     def __getitem__(self, key: Tuple[str, str]):

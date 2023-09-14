@@ -98,5 +98,5 @@ class YUVFrame:
     def split(self):
         return self._y, self._u, self._v
 
-    def to_rgb(self, color_conversion: str, value_range: str = 'limited'):
-        return colorspaces[(color_conversion, value_range)].to_rgb(*self.split(), self.yuv_format)
+    def to_rgb(self, specification: str = 'bt709', value_range: str = 'limited'):
+        return colorspaces[(specification, value_range)].to_rgb(*self.split(), self.yuv_format)
