@@ -168,6 +168,18 @@ def ones(width, height, pixel_format):
                     yuv_format)
 
 
+def to_rgb(yuv, specification='bt709', value_range='limited'):
+    """
+    Convert yuv data to rgb.
+
+    :param yuv: yuv frame
+    :param specification: specification identifier (default: 'bt709')
+    :param value_range: yuv value range (default: 'limited')
+    :return: rgb data
+    """
+    return colorspaces[specification, value_range].to_rgb(*yuv.split(), yuv.yuv_format)
+
+
 def from_rgb(rgb, pixel_format, specification='bt709', value_range='limited'):
     """
     Initialize a new yuv frame from rgb data.

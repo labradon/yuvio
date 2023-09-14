@@ -12,7 +12,7 @@ Welcome to **yuvio**, a python package for reading and writing uncompressed yuv
 image and video data. **yuvio** supports many pixel formats specified by ffmpeg.
 And if it doesn't, it's fast and easy to add support for your own pixel formats.
 
-**NEW**: Added experimental support for colorspace conversion (YCbCr to/from RGB). API is subject to change until next minor version release (current minor version: 1.3). For usage, see [below](#experimental-colorspace-conversion). Supported specifications are
+**NEW**: Added support for colorspace conversion (YCbCr to/from RGB). For usage, see [below](#colorspace-conversion). Supported specifications are
 * `'bt601'`: [Rec. ITU-R BT.601](https://www.itu.int/rec/R-REC-BT.601)
 * `'bt709'`: [Rec. ITU-R BT.709](https://www.itu.int/rec/R-REC-BT.709)
 * `'bt2020'`: [Rec. ITU-R BT.2020](https://www.itu.int/rec/R-REC-BT.2020)
@@ -97,19 +97,19 @@ frame_420 = yuvio.frame((y, u, v), "yuv420p")
 frame_400 = yuvio.frame((y, None, None), "gray")
 ```
 
-### Experimental: Colorspace conversion
+### Colorspace conversion
 
-Colorspace conversion from RGB to YCbCr colorspace and from YCbCr colorspace is possible using the `from_rgb(rgb, pixel_format, specification, value_range)` and `to_rgb(specification, value_range)` functions.
+Colorspace conversion from RGB to YCbCr colorspace and from YCbCr to RGB colorspace is possible using the `from_rgb(rgb, pixel_format, specification, value_range)` and `to_rgb(yuv, specification, value_range)` functions.
 ```python
 import yuvio
 
-rgb = ...  # np.ndarray as [height, width, 3]
-yuv_frame = yuvio.from_rgb(rgb, 'yuv444p', 'bt709', 'limited')
-rgb = yuv_frame.to_rgb('bt709', 'limited')
+yuv_frame = ...
+rgb = yuvio.to_rgb(yuv_frame, specification='bt709', value_range='limited')
+yuv_frame = yuvio.from_rgb(rgb, 'yuv444p', specification='bt709', value_range='limited')
 ```
 
 > [!IMPORTANT]  
-> Experimental feature. Colorspace conversion is functional, but API is subject to change.
+> Color conversion is only supported for '444' chroma subsampling, i.e., no chroma subsampling. Support for chroma subsampling is planned for a future release.
 
 ## Formats
 
