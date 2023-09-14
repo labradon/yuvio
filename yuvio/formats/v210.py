@@ -13,6 +13,10 @@ class V210(Format):
     def chroma_subsampling():
         return 2, 1
 
+    @staticmethod
+    def bitdepth():
+        return 10
+
     @property
     def dtype(self):
         return np.dtype([

@@ -5,12 +5,18 @@
 ![PyPI](https://img.shields.io/pypi/v/yuvio)
 
 <div align="center">
-    <img align="center" src="logo.png" width="520" alt=“YUVIO” />
+    <img align="center" src="https://github.com/labradon/yuvio/blob/main/logo.png?raw=true" width="520" alt=“YUVIO” />
 </div>
 
 Welcome to **yuvio**, a python package for reading and writing uncompressed yuv
 image and video data. **yuvio** supports many pixel formats specified by ffmpeg.
 And if it doesn't, it's fast and easy to add support for your own pixel formats.
+
+**NEW**: Added support for colorspace conversion (YCbCr to/from RGB). For usage, see [below](#colorspace-conversion). Supported specifications are
+* `'bt601'`: [Rec. ITU-R BT.601](https://www.itu.int/rec/R-REC-BT.601)
+* `'bt709'`: [Rec. ITU-R BT.709](https://www.itu.int/rec/R-REC-BT.709)
+* `'bt2020'`: [Rec. ITU-R BT.2020](https://www.itu.int/rec/R-REC-BT.2020)
+* `'bt2100'`: [Rec. ITU-R BT.2100](https://www.itu.int/rec/R-REC-BT.2100)
 
 ## Install
 
@@ -90,6 +96,20 @@ frame_420 = yuvio.frame((y, u, v), "yuv420p")
 
 frame_400 = yuvio.frame((y, None, None), "gray")
 ```
+
+### Colorspace conversion
+
+Colorspace conversion from RGB to YCbCr colorspace and from YCbCr to RGB colorspace is possible using the `from_rgb(rgb, pixel_format, specification, value_range)` and `to_rgb(yuv, specification, value_range)` functions.
+```python
+import yuvio
+
+yuv_frame = ...
+rgb = yuvio.to_rgb(yuv_frame, specification='bt709', value_range='limited')
+yuv_frame = yuvio.from_rgb(rgb, 'yuv444p', specification='bt709', value_range='limited')
+```
+
+> [!IMPORTANT]  
+> Color conversion is only supported for '444' chroma subsampling, i.e., no chroma subsampling. Support for chroma subsampling is planned for a future release.
 
 ## Formats
 

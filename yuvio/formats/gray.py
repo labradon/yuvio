@@ -25,6 +25,10 @@ class Gray(_GrayBase):
     def identifier():
         return "gray"
 
+    @staticmethod
+    def bitdepth():
+        return 8
+
     @property
     def dtype(self):
         return np.dtype([
@@ -38,6 +42,10 @@ class Gray10LE(_GrayBase):
     @staticmethod
     def identifier():
         return "gray10le"
+
+    @staticmethod
+    def bitdepth():
+        return 10
 
     @property
     def dtype(self):
@@ -53,6 +61,10 @@ class Gray10BE(_GrayBase):
     def identifier():
         return "gray10be"
 
+    @staticmethod
+    def bitdepth():
+        return 10
+
     @property
     def dtype(self):
         return np.dtype([
@@ -66,6 +78,10 @@ class Gray16LE(_GrayBase):
     @staticmethod
     def identifier():
         return "gray16le"
+
+    @staticmethod
+    def bitdepth():
+        return 16
 
     @property
     def dtype(self):
@@ -81,6 +97,10 @@ class Gray16BE(_GrayBase):
     def identifier():
         return "gray16be"
 
+    @staticmethod
+    def bitdepth():
+        return 16
+
     @property
     def dtype(self):
         return np.dtype([
@@ -94,6 +114,10 @@ class Gray9LE(_GrayBase):
     @staticmethod
     def identifier():
         return "gray9le"
+
+    @staticmethod
+    def bitdepth():
+        return 9
 
     @property
     def dtype(self):
@@ -109,6 +133,10 @@ class Gray9BE(_GrayBase):
     def identifier():
         return "gray9be"
 
+    @staticmethod
+    def bitdepth():
+        return 9
+
     @property
     def dtype(self):
         return np.dtype([
@@ -122,6 +150,10 @@ class Gray12LE(_GrayBase):
     @staticmethod
     def identifier():
         return "gray12le"
+
+    @staticmethod
+    def bitdepth():
+        return 12
 
     @property
     def dtype(self):
@@ -137,6 +169,10 @@ class Gray12BE(_GrayBase):
     def identifier():
         return "gray12be"
 
+    @staticmethod
+    def bitdepth():
+        return 12
+
     @property
     def dtype(self):
         return np.dtype([
@@ -151,6 +187,10 @@ class Gray14LE(_GrayBase):
     def identifier():
         return "gray14le"
 
+    @staticmethod
+    def bitdepth():
+        return 14
+
     @property
     def dtype(self):
         return np.dtype([
@@ -164,6 +204,10 @@ class Gray14BE(_GrayBase):
     @staticmethod
     def identifier():
         return "gray14be"
+
+    @staticmethod
+    def bitdepth():
+        return 14
 
     @property
     def dtype(self):

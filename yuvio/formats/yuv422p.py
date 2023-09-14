@@ -29,6 +29,10 @@ class YUV422P(_YUV422PBase):
     def identifier():
         return "yuv422p"
 
+    @staticmethod
+    def bitdepth():
+        return 8
+
     @property
     def dtype(self):
         return np.dtype([
@@ -42,6 +46,10 @@ class YUV422P10LE(_YUV422PBase):
     @staticmethod
     def identifier():
         return "yuv422p10le"
+
+    @staticmethod
+    def bitdepth():
+        return 10
 
     @property
     def dtype(self):
@@ -57,6 +65,10 @@ class YUV422P10BE(_YUV422PBase):
     def identifier():
         return "yuv422p10be"
 
+    @staticmethod
+    def bitdepth():
+        return 10
+
     @property
     def dtype(self):
         return np.dtype([
@@ -70,6 +82,10 @@ class YUV422P16LE(_YUV422PBase):
     @staticmethod
     def identifier():
         return "yuv422p16le"
+
+    @staticmethod
+    def bitdepth():
+        return 16
 
     @property
     def dtype(self):
@@ -85,6 +101,10 @@ class YUV422P16BE(_YUV422PBase):
     def identifier():
         return "yuv422p16be"
 
+    @staticmethod
+    def bitdepth():
+        return 16
+
     @property
     def dtype(self):
         return np.dtype([
@@ -98,6 +118,10 @@ class YUV422P9LE(_YUV422PBase):
     @staticmethod
     def identifier():
         return "yuv422p9le"
+
+    @staticmethod
+    def bitdepth():
+        return 9
 
     @property
     def dtype(self):
@@ -113,6 +137,10 @@ class YUV422P9BE(_YUV422PBase):
     def identifier():
         return "yuv422p9be"
 
+    @staticmethod
+    def bitdepth():
+        return 9
+
     @property
     def dtype(self):
         return np.dtype([
@@ -126,6 +154,10 @@ class YUV422P12LE(_YUV422PBase):
     @staticmethod
     def identifier():
         return "yuv422p12le"
+
+    @staticmethod
+    def bitdepth():
+        return 12
 
     @property
     def dtype(self):
@@ -141,6 +173,10 @@ class YUV422P12BE(_YUV422PBase):
     def identifier():
         return "yuv422p12be"
 
+    @staticmethod
+    def bitdepth():
+        return 12
+
     @property
     def dtype(self):
         return np.dtype([
@@ -155,6 +191,10 @@ class YUV422P14LE(_YUV422PBase):
     def identifier():
         return "yuv422p14le"
 
+    @staticmethod
+    def bitdepth():
+        return 14
+
     @property
     def dtype(self):
         return np.dtype([
@@ -168,6 +208,10 @@ class YUV422P14BE(_YUV422PBase):
     @staticmethod
     def identifier():
         return "yuv422p14be"
+
+    @staticmethod
+    def bitdepth():
+        return 14
 
     @property
     def dtype(self):

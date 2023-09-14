@@ -2,6 +2,7 @@ import numpy as np
 from .. import pixel_formats
 from . import Reader, Writer
 from . import YUVFrame
+from . import colorspaces
 
 
 def imread(file, width, height, pixel_format, index=0):
@@ -112,7 +113,7 @@ def frame(yuv, pixel_format):
         expected_chroma_shape = (y.shape[0] / sub_h, y.shape[1] / sub_w)
     if u.shape != expected_chroma_shape or v.shape != expected_chroma_shape:
         raise RuntimeError("Invalid chroma shape for pixel format '{}'".format(pixel_format))
-    yuv_frame = YUVFrame(y, u, v, pixel_format)
+    yuv_frame = YUVFrame(y, u, v, yuv_format)
     return yuv_frame
 
 
@@ -130,7 +131,7 @@ def empty(width, height, pixel_format):
     return YUVFrame(y[0],
                     u[0] if u is not None else None,
                     v[0] if v is not None else None,
-                    pixel_format)
+                    yuv_format)
 
 
 def zeros(width, height, pixel_format):
@@ -147,7 +148,7 @@ def zeros(width, height, pixel_format):
     return YUVFrame(y[0],
                     u[0] if u is not None else None,
                     v[0] if v is not None else None,
-                    pixel_format)
+                    yuv_format)
 
 
 def ones(width, height, pixel_format):
@@ -164,4 +165,31 @@ def ones(width, height, pixel_format):
     return YUVFrame(y[0],
                     u[0] if u is not None else None,
                     v[0] if v is not None else None,
-                    pixel_format)
+                    yuv_format)
+
+
+def to_rgb(yuv, specification='bt709', value_range='limited'):
+    """
+    Convert yuv data to rgb.
+
+    :param yuv: yuv frame
+    :param specification: specification identifier (default: 'bt709')
+    :param value_range: yuv value range (default: 'limited')
+    :return: rgb data
+    """
+    return colorspaces[specification, value_range].to_rgb(*yuv.split(), yuv.yuv_format)
+
+
+def from_rgb(rgb, pixel_format, specification='bt709', value_range='limited'):
+    """
+    Initialize a new yuv frame from rgb data.
+
+    :param rgb: rgb data
+    :param pixel_format: ffmpeg pixel format specifier
+    :param specification: specification identifier (default: 'bt709')
+    :param value_range: yuv value range (default: 'limited')
+    :return: yuv frame
+    """
+    yuv_format = pixel_formats[pixel_format](rgb.shape[1], rgb.shape[0])
+    y, u, v = colorspaces[specification, value_range].from_rgb(rgb, yuv_format)
+    return YUVFrame(y, u, v, yuv_format)

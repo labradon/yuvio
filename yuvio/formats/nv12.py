@@ -13,6 +13,10 @@ class NV12(Format):
     def chroma_subsampling():
         return 2, 2
 
+    @staticmethod
+    def bitdepth():
+        return 8
+
     @property
     def dtype(self):
         return np.dtype([
