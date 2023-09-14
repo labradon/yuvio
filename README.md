@@ -108,8 +108,8 @@ yuv_frame = yuvio.from_rgb(rgb, 'yuv444p', 'bt709', 'limited')
 rgb = yuv_frame.to_rgb('bt709', 'limited')
 ```
 
-[!IMPORTANT]  
-Experimental feature. Colorspace conversion is functional, but API is subject to change.
+> [!IMPORTANT]  
+> Experimental feature. Colorspace conversion is functional, but API is subject to change.
 
 ## Formats
 
