@@ -112,8 +112,6 @@ class ColorspaceManager:
         # - BT.709: https://www.itu.int/rec/R-REC-BT.709
         # - BT.2020: https://www.itu.int/rec/R-REC-BT.2020
         # - BT.2100: https://www.itu.int/rec/R-REC-BT.2100
-        # - summarized coefficients: https://gist.github.com/yohhoy/dafa5a47dade85d8b40625261af3776a
-        # - value ranges: https://ffmpeg.org/doxygen/trunk/pixfmt_8h.html#a3da0bf691418bc22c4bcbe6583ad589a
         self._conversions = {
             ('bt601', 'limited'): Colorspace([0.299, 0.587, 0.114, 1.772, 1.402], (16, 235), (16, 240), 1),
             ('bt601', 'full'): Colorspace([0.299, 0.587, 0.114, 1.772, 1.402], (0, 255), (1, 255), 1),
