@@ -11,12 +11,18 @@ class Reader:
 
     def __init__(self, file: Union[Path, str, io.RawIOBase, io.BufferedIOBase], format: Format):
         if isinstance(file, io.RawIOBase) or isinstance(file, io.BufferedIOBase):
+            self._close = False
             self._file = file
         else:
+            self._close = True
             self._file = open(Path(file).expanduser().resolve(), 'rb')
         self._format = format
         self._length = self._length_from_stream()
         self._iter_idx = 0
+
+    def __del__(self):
+        if self._close:
+            self._file.close()
 
     def __len__(self):
         return self._length

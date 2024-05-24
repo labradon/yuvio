@@ -10,10 +10,16 @@ class Writer:
 
     def __init__(self, file, format: Format):
         if isinstance(file, IOBase):
+            self._close = False
             self._file = file
         else:
+            self._close = True
             self._file = open(Path(file).expanduser().resolve(), 'wb')
         self._format = format
+
+    def __del__(self):
+        if self._close:
+            self._file.close()
 
     def write(self, yuv_frames: Union[List[YUVFrame], YUVFrame]):
         if isinstance(yuv_frames, YUVFrame):
