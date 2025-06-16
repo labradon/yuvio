@@ -9,8 +9,9 @@
 </div>
 
 Welcome to **yuvio**, a python package for reading and writing uncompressed yuv
-image and video data. **yuvio** supports many pixel formats specified by ffmpeg.
-And if it doesn't, it's fast and easy to add support for your own pixel formats.
+image and video data. **yuvio** supports all common yuv pixel formats specified by ffmpeg and [more](#formats).
+Its modular design allows fast and easy extension to add support for your own pixel formats.
+If you believe an important pixel format is missing, feel free to open an issue.
 
 **NEW**: Added support for colorspace conversion (YCbCr to/from RGB). For usage, see [below](#colorspace-conversion). Supported specifications are
 * `'bt601'`: [Rec. ITU-R BT.601](https://www.itu.int/rec/R-REC-BT.601)
