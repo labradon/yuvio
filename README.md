@@ -173,7 +173,6 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv444p12be'`
 * `'yuv444p14le'`
 * `'yuv444p14be'`
-* `'yuv420p'`
 
 **Interleaved YUV 4:2:0**
 (*Even lines carry luma and chroma [y0 u0 y1 v0 ...], odd lines carry only luma [y0 y1 ...]*)
