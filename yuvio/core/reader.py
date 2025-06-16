@@ -11,18 +11,27 @@ class Reader:
 
     def __init__(self, file: Union[Path, str, io.RawIOBase, io.BufferedIOBase], format: Format):
         if isinstance(file, io.RawIOBase) or isinstance(file, io.BufferedIOBase):
-            self._close = False
+            self._owns = False
             self._file = file
         else:
-            self._close = True
+            self._owns = True
             self._file = open(Path(file).expanduser().resolve(), 'rb')
+            self._open = True
         self._format = format
         self._length = self._length_from_stream()
         self._iter_idx = 0
 
+    def close(self):
+        if not self._owns:
+            raise RuntimeError("Cannot close unowned IO handle.")
+        if not self._open:
+            raise IOError("File is already closed.")
+        self._file.close()
+        self._open = False
+
     def __del__(self):
-        if self._close:
-            self._file.close()
+        if self._owns and self._open:
+            self.close()
 
     def __len__(self):
         return self._length
