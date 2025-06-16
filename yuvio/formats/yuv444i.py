@@ -17,7 +17,7 @@ class _YUV444IBase(Format, ABC):
         return y, u, v
 
     def pack(self, yuv):
-        data = np.empty(y.shape[0], dtype=self.dtype)
+        data = np.empty(yuv[0].shape[0], dtype=self.dtype)
         data['frame']['y'][:] = yuv[0]
         data['frame']['u'][:] = yuv[1]
         data['frame']['v'][:] = yuv[2]
