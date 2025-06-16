@@ -164,6 +164,17 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv444p12be'`
 * `'yuv444p14le'`
 * `'yuv444p14be'`
+* `'yuv420p'`
+* `'yuv420i10le'`
+* `'yuv420i10be'`
+* `'yuv420i16le'`
+* `'yuv420i16be'`
+* `'yuv420i9le'`
+* `'yuv420i9be'`
+* `'yuv420i12le'`
+* `'yuv420i12be'`
+* `'yuv420i14le'`
+* `'yuv420i14be'`
 * `'yuyv422'`
 * `'uyvy422'`
 * `'yvyu422'`

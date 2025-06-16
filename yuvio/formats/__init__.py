@@ -12,6 +12,7 @@ from .yuv420p import (YUV420P,
                       YUV420P9LE, YUV420P9BE,
                       YUV420P12LE, YUV420P12BE,
                       YUV420P14LE, YUV420P14BE)
+from .yuv420i import (YUV420I)
 from .yuv422p import (YUV422P,
                       YUV422P10LE, YUV422P10BE,
                       YUV422P16LE, YUV422P16BE,
