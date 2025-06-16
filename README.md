@@ -118,6 +118,8 @@ To get detailed information on the IO format of a specific `pix_fmt` use
 `print(yuvio.pixel_formats[pix_fmt].io_info())`.
 
 Currently, the following pixel formats (`pix_fmt`) are available:
+
+**Grayscale/YUV 4:0:0**
 * `'gray'`
 * `'gray10le'`
 * `'gray10be'`
@@ -129,8 +131,8 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'gray12be'`
 * `'gray14le'`
 * `'gray14be'`
-* `'nv12'`
-* `'v210'`
+
+**Planar YUV 4:2:0**
 * `'yuv420p'`
 * `'yuv420p10le'`
 * `'yuv420p10be'`
@@ -142,6 +144,11 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv420p12be'`
 * `'yuv420p14le'`
 * `'yuv420p14be'`
+
+**Semi-planar YUV 4:2:0**
+* `'nv12'`
+
+**Planar YUV 4:2:2**
 * `'yuv422p'`
 * `'yuv422p10le'`
 * `'yuv422p10be'`
@@ -153,6 +160,8 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv422p12be'`
 * `'yuv422p14le'`
 * `'yuv422p14be'`
+
+**Planar YUV 4:4:4**
 * `'yuv444p'`
 * `'yuv444p10le'`
 * `'yuv444p10be'`
@@ -165,6 +174,10 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv444p14le'`
 * `'yuv444p14be'`
 * `'yuv420p'`
+
+**Interleaved YUV 4:2:0**
+(*Even lines carry luma and chroma [y0 u0 y1 v0 ...], odd lines carry only luma [y0 y1 ...]*)
+* `'yuv420i'`
 * `'yuv420i10le'`
 * `'yuv420i10be'`
 * `'yuv420i16le'`
@@ -175,6 +188,35 @@ Currently, the following pixel formats (`pix_fmt`) are available:
 * `'yuv420i12be'`
 * `'yuv420i14le'`
 * `'yuv420i14be'`
-* `'yuyv422'`
+
+**Interleaved YUV 4:2:2**
+* `'yuv422i'`
+* `'yuv422i10le'`
+* `'yuv422i10be'`
+* `'yuv422i16le'`
+* `'yuv422i16be'`
+* `'yuv422i9le'`
+* `'yuv422i9be'`
+* `'yuv422i12le'`
+* `'yuv422i12be'`
+* `'yuv422i14le'`
+* `'yuv422i14be'`
+* `'yuyv422'`: Same as `'yuv422i'`
 * `'uyvy422'`
 * `'yvyu422'`
+
+**Interleaved YUV 4:4:4**
+* `'yuv444i'`
+* `'yuv444i10le'`
+* `'yuv444i10be'`
+* `'yuv444i16le'`
+* `'yuv444i16be'`
+* `'yuv444i9le'`
+* `'yuv444i9be'`
+* `'yuv444i12le'`
+* `'yuv444i12be'`
+* `'yuv444i14le'`
+* `'yuv444i14be'`
+
+**Special formats**
+* `'v210'`
