@@ -18,6 +18,7 @@ class Reader:
             self._file = open(Path(file).expanduser().resolve(), 'rb')
             self._open = True
         self._format = format
+        self._start_offset = self._file.tell()
         self._length = self._length_from_stream()
         self._iter_idx = 0
 
@@ -41,10 +42,9 @@ class Reader:
             yield self.read(i, count=1)[0]
 
     def _length_from_stream(self):
-        stream_pos = self._file.tell()
         self._file.seek(0, io.SEEK_END)
-        num_bytes = self._file.tell()
-        self._file.seek(stream_pos, io.SEEK_SET)
+        num_bytes = self._file.tell() - self._start_offset
+        self._file.seek(self._start_offset, io.SEEK_SET)
         return num_bytes // self._format.dtype.itemsize
 
     def _validate_memory(self, count):
@@ -68,7 +68,7 @@ class Reader:
                                                                        self._file.name,
                                                                        self._length))
         self._validate_memory(count)
-        self._file.seek(index * self._format.dtype.itemsize)
+        self._file.seek(self._start_offset + index * self._format.dtype.itemsize)
         data = np.empty(count, dtype=self._format.dtype)
         self._file.readinto(data.data)
         return self.unpack_data(data)
